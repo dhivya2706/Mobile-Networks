@@ -1,0 +1,282 @@
+// Manifest
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.feedback">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Feedback">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ResultActivity"
+            android:exported="true"/>
+
+    </application>
+
+</manifest>
+
+
+//Main
+
+package com.example.feedback;
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RatingBar;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    EditText etName, etEmail, etFeedback;
+    RatingBar ratingService, ratingCleanliness;
+    Button btnSubmit;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        etName = findViewById(R.id.etName);
+        etEmail = findViewById(R.id.etEmail);
+        etFeedback = findViewById(R.id.etFeedback);
+        ratingService = findViewById(R.id.ratingService);
+        ratingCleanliness = findViewById(R.id.ratingCleanliness);
+        btnSubmit = findViewById(R.id.btnSubmit);
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String name = etName.getText().toString().trim();
+                String email = etEmail.getText().toString().trim();
+                String feedback = etFeedback.getText().toString().trim();
+                float serviceRating = ratingService.getRating();
+                float cleanlinessRating = ratingCleanliness.getRating();
+
+                if(name.isEmpty() || email.isEmpty() || feedback.isEmpty()){
+                    Toast.makeText(MainActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Intent intent = new Intent(MainActivity.this, ResultActivity.class);
+                intent.putExtra("name", name);
+                intent.putExtra("email", email);
+                intent.putExtra("feedback", feedback);
+                intent.putExtra("serviceRating", serviceRating);
+                intent.putExtra("cleanlinessRating", cleanlinessRating);
+
+                startActivity(intent); 
+            }
+        });
+    }
+}
+
+
+// submit
+
+package com.example.feedback;
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class ResultActivity extends AppCompatActivity {
+
+    TextView tvSummary;
+    Button btnSubmit;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_result);
+
+        tvSummary = findViewById(R.id.tvSummary);
+        btnSubmit = findViewById(R.id.btnSendEmail);
+
+        // Receive data via explicit intent
+        String name = getIntent().getStringExtra("name");
+        String email = getIntent().getStringExtra("email");
+        String feedback = getIntent().getStringExtra("feedback");
+        float serviceRating = getIntent().getFloatExtra("serviceRating", 0);
+        float cleanlinessRating = getIntent().getFloatExtra("cleanlinessRating", 0);
+
+        String summary = "Name: " + name + "\n"
+                + "Email: " + email + "\n"
+                + "Service Rating: " + serviceRating + "/5\n"
+                + "Cleanliness Rating: " + cleanlinessRating + "/5\n"
+                + "Feedback: " + feedback;
+
+        tvSummary.setText(summary);
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(ResultActivity.this, "Submitted Successfully!", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+}
+
+
+//xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="#E0F7FA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="City Hospital Feedback"
+            android:textSize="28sp"
+            android:textColor="#00796B"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp"/>
+
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Your Name"
+            android:textColor="@color/black"
+            android:inputType="textPersonName"
+            android:layout_marginBottom="16dp"
+            android:padding="14dp"
+            android:background="@drawable/edit_text_bg"/>
+
+        <EditText
+            android:textColor="@color/black"
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Your Email"
+            android:inputType="textEmailAddress"
+            android:layout_marginBottom="16dp"
+            android:padding="14dp"
+            android:background="@drawable/edit_text_bg"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Service Rating"
+            android:textSize="18sp"
+            android:textColor="#004D40"
+            android:layout_marginBottom="8dp"/>
+
+        <RatingBar
+            android:id="@+id/ratingService"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cleanliness Rating"
+            android:textSize="18sp"
+            android:textColor="#004D40"
+            android:layout_marginBottom="8dp"/>
+
+        <RatingBar
+            android:id="@+id/ratingCleanliness"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1"
+            android:layout_marginBottom="16dp"/>
+
+        <EditText
+            android:id="@+id/etFeedback"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:hint="Your Feedback"
+            android:inputType="textMultiLine"
+            android:textColor="@color/black"
+            android:gravity="top"
+            android:padding="14dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/edit_text_bg"/>
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:text="Submit"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:background="@drawable/button_bg"/>
+    </LinearLayout>
+</ScrollView>
+
+
+//res_xml
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="24dp"
+    android:background="#E0F7FA">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Summary"
+        android:textSize="28sp"
+        android:textColor="#00796B"
+        android:textStyle="bold"
+        android:layout_marginTop="24px"
+        android:textAlignment="textStart"
+        android:layout_marginBottom="4dp"/>
+    <TextView
+        android:id="@+id/tvSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="84dp"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/btnSendEmail"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:text="Send Email"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/button_bg"
+        android:layout_marginTop="400dp"
+        android:textSize="18sp"/>
+</LinearLayout>
+
