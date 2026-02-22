@@ -1,0 +1,249 @@
+// Main
+
+package com.example.simplecalculator;
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity {
+
+    private TextView resultText;
+    private String currentInput = "";
+    private double firstNumber = 0.0;
+    private String operator = "";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        resultText = findViewById(R.id.resultText);
+
+        setNumericButtonClickListener();
+        setOperatorButtonClickListener();
+
+        findViewById(R.id.buttonClear).setOnClickListener(v -> {
+            currentInput = "";
+            firstNumber = 0.0;
+            operator = "";
+            resultText.setText("0");
+        });
+    }
+
+    private void setNumericButtonClickListener() {
+        View.OnClickListener listener = v -> {
+            Button button = (Button) v;
+            currentInput += button.getText().toString();
+            resultText.setText(currentInput);
+        };
+
+        findViewById(R.id.button0).setOnClickListener(listener);
+        findViewById(R.id.button1).setOnClickListener(listener);
+        findViewById(R.id.button2).setOnClickListener(listener);
+        findViewById(R.id.button3).setOnClickListener(listener);
+        findViewById(R.id.button4).setOnClickListener(listener);
+        findViewById(R.id.button5).setOnClickListener(listener);
+        findViewById(R.id.button6).setOnClickListener(listener);
+        findViewById(R.id.button7).setOnClickListener(listener);
+        findViewById(R.id.button8).setOnClickListener(listener);
+        findViewById(R.id.button9).setOnClickListener(listener);
+        findViewById(R.id.buttonDot).setOnClickListener(listener);
+    }
+
+    private void setOperatorButtonClickListener() {
+        View.OnClickListener operatorListener = v -> {
+            Button button = (Button) v;
+            if (!currentInput.isEmpty()) {
+                firstNumber = Double.parseDouble(currentInput);
+                operator = button.getText().toString();
+                currentInput = "";
+            }
+        };
+
+        findViewById(R.id.buttonAdd).setOnClickListener(operatorListener);
+        findViewById(R.id.buttonSubtract).setOnClickListener(operatorListener);
+        findViewById(R.id.buttonMultiply).setOnClickListener(operatorListener);
+        findViewById(R.id.buttonDivide).setOnClickListener(operatorListener);
+        findViewById(R.id.buttonEqual).setOnClickListener(v -> {
+            if (!currentInput.isEmpty()) {
+                double secondNumber = Double.parseDouble(currentInput);
+                double result;
+
+                switch (operator) {
+                    case "+":
+                        result = firstNumber + secondNumber;
+                        break;
+                    case "-":
+                        result = firstNumber - secondNumber;
+                        break;
+                    case "*":
+                        result = firstNumber * secondNumber;
+                        break;
+                    case "/":
+                        result = secondNumber != 0 ? firstNumber / secondNumber : 0;
+                        break;
+                    default:
+                        return;
+                }
+                resultText.setText(String.valueOf(result));
+                currentInput = "";
+            }
+        });
+    }
+}
+
+// xml
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:alpha="0.9"
+    android:background="#060606"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/resultText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0.2"
+        android:background="#F3F3F3"
+        android:gravity="end"
+        android:padding="16dp"
+        android:text="0"
+        android:textSize="32sp" />
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:columnCount="4"
+        android:padding="8dp"
+        android:rowCount="5">
+
+        <Button
+            android:id="@+id/button7"
+            style="@style/CalculatorButton"
+            android:text="7" />
+
+        <Button
+            android:id="@+id/button8"
+            style="@style/CalculatorButton"
+            android:text="8" />
+
+        <Button
+            android:id="@+id/button9"
+            style="@style/CalculatorButton"
+            android:text="9" />
+
+        <Button
+            android:id="@+id/buttonDivide"
+            android:alpha="0.8"
+            android:backgroundTint="@color/orange"
+            android:scaleX="1"
+            android:scaleY="1"
+            android:textSize="30dp"
+            android:text="/"
+            app:cornerRadius="15dp" />
+
+        <Button
+            android:id="@+id/button4"
+            style="@style/CalculatorButton"
+            android:text="4" />
+
+        <Button
+            android:id="@+id/button5"
+            style="@style/CalculatorButton"
+            android:text="5" />
+
+        <Button
+            android:id="@+id/button6"
+            style="@style/CalculatorButton"
+            android:text="6" />
+
+        <Button
+            android:id="@+id/buttonMultiply"
+            android:alpha="0.8"
+            android:backgroundTint="@color/orange"
+            android:scaleX="1"
+            android:scaleY="1"
+            app:cornerRadius="15dp"
+            android:textSize="30dp"
+            android:text="*" />
+
+        <Button
+            android:id="@+id/button1"
+            style="@style/CalculatorButton"
+            android:text="1" />
+
+        <Button
+            android:id="@+id/button2"
+            style="@style/CalculatorButton"
+            android:text="2" />
+
+        <Button
+            android:id="@+id/button3"
+            style="@style/CalculatorButton"
+            android:text="3" />
+
+        <Button
+            android:id="@+id/buttonSubtract"
+            android:alpha="0.8"
+            android:backgroundTint="@color/orange"
+            android:scaleX="1"
+            android:scaleY="1"
+            app:cornerRadius="15dp"
+            android:textSize="30dp"
+            android:text="-" />
+
+        <Button
+            android:id="@+id/button0"
+            style="@style/CalculatorButton"
+            android:text="0" />
+
+        <Button
+            android:id="@+id/buttonDot"
+            style="@style/CalculatorButton"
+            android:text="." />
+
+        <Button
+            android:id="@+id/buttonEqual"
+            style="@style/CalculatorButton"
+            android:text="=" />
+
+        <Button
+            android:id="@+id/buttonAdd"
+            android:alpha="0.8"
+            android:backgroundTint="@color/orange"
+            android:scaleX="1"
+            android:scaleY="1"
+            app:cornerRadius="15dp"
+            android:textSize="30dp"
+            android:text="+" />
+
+        <Button
+            android:id="@+id/buttonClear"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/orange"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:alpha="0.8"
+            android:scaleX="1"
+            android:scaleY="1"
+            app:cornerRadius="15dp"
+            android:textSize="30dp"
+            android:layout_margin="4dp"
+            android:text="C" />
+
+    </GridLayout>
+
+</LinearLayout>
+
+
