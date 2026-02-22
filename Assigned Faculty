@@ -1,0 +1,155 @@
+// Main
+
+package com.example.student;
+
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    ListView listView;
+    boolean studentMode = false;
+
+    String[] students = {"Ganga", "Gayu", "Raji", "Jeni", "Dhivya"};
+    String[] studentFaculty = {
+            "Ganga is assigned to Mr.M.V.Balaganesh",
+            "Gayu is assigned to Mr.M.V.Balaganesh",
+            "Raji is assigned to Dr.N.Malathy",
+            "Jeni is assigned to Dr.N.Malathy",
+            "Dhivya is assigned to Mr.M.V.Balaganesh"
+    };
+
+    String[] faculty = {"Mr.M.V.Balaganesh", "Dr.N.Malathy"};
+    String[] facultyStudents = {
+            "Mr.M.V.Balaganesh → Ganga, Gayu, Dhivya",
+            "Dr.N.Malathy → Raji, Jeni"
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        listView = findViewById(R.id.listView);
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            if (studentMode) {
+                Toast.makeText(this,
+                        studentFaculty[position],
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this,
+                        facultyStudents[position],
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.menu_student) {
+            studentMode = true;
+            listView.setAdapter(new ArrayAdapter<>(
+                    this,
+                    android.R.layout.simple_list_item_1,
+                    students));
+        }
+
+        if (item.getItemId() == R.id.menu_faculty) {
+            studentMode = false;
+            listView.setAdapter(new ArrayAdapter<>(
+                    this,
+                    android.R.layout.simple_list_item_1,
+                    faculty));
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+}
+
+//xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#D0EDFC"
+    android:padding="16dp">
+
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:gravity="center"
+        android:text="Select from Menu"
+        android:textColor="#000000"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1468B1"
+        android:layout_marginBottom="12dp" />
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="10dp"
+        android:elevation="4dp">
+
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:src="@drawable/img"
+            android:scaleType="fitXY" />
+
+        <TextView
+            android:id="@+id/tag_state_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="480dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="sans-serif-smallcaps"
+            android:gravity="center"
+            android:text="Mepco Schlenk Engineering Coleege"
+            android:textColor="#000000"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="#1468B1"
+            android:dividerHeight="1dp"
+            android:background="@android:color/transparent" />
+
+    </FrameLayout>
+
+</LinearLayout>
