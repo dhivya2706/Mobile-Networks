@@ -1,0 +1,270 @@
+//Mnaifest
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false"/>
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Message">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+        </activity>
+    </application>
+
+</manifest>
+
+
+//Main
+
+package com.example.message;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.telephony.SmsManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+public class MainActivity extends AppCompatActivity {
+
+    EditText phone, name, roll, cgpa;
+    Button sendBtn;
+
+    private static final int SMS_PERMISSION_CODE = 1;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        phone = findViewById(R.id.phone);
+        name = findViewById(R.id.name);
+        roll = findViewById(R.id.roll);
+        cgpa = findViewById(R.id.cgpa);
+        sendBtn = findViewById(R.id.sendBtn);
+
+        // Request Permission
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.SEND_SMS},
+                    SMS_PERMISSION_CODE);
+        }
+
+        sendBtn.setOnClickListener(v -> sendSMS());
+    }
+
+    private void sendSMS() {
+
+        String number = phone.getText().toString();
+
+        String message =
+                "Student: " + name.getText().toString()
+                        + ", RollNo: " + roll.getText().toString()
+                        + ", CGPA: " + cgpa.getText().toString();
+
+        try {
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(number, null, message,
+                    null, null);
+
+            Toast.makeText(this,
+                    "SMS Sent!",
+                    Toast.LENGTH_LONG).show();
+
+        } catch (Exception e) {
+            Toast.makeText(this,
+                    "SMS Failed!",
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+}
+
+
+//Xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DFF2FF">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:background="#DFF2FF"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- 🔵 HEADER -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:background="#2A83B0"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MEPCO SCHLENK"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ENGINEERING COLLEGE"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(An Autonomous Institution)"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+
+        <!-- 🧾 FORM -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:background="#DFF2FF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/phone"
+                android:hint="Phone Number"
+                android:inputType="phone"
+                android:textColorHint="@color/black"
+                android:textColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:id="@+id/name"
+                android:hint="Student Name"
+                android:textColorHint="@color/black"
+                android:textColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:id="@+id/roll"
+                android:hint="Roll No"
+                android:textColorHint="@color/black"
+                android:textColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:id="@+id/cgpa"
+                android:hint="CGPA"
+                android:textColorHint="@color/black"
+                android:textColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/sendBtn"
+                android:text="Send SMS"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="#0A5DAA"/>
+        </LinearLayout>
+
+
+        <!-- 🔵 VISION BOX -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@drawable/vision_bg"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="VISION"
+                android:textColor="#0E2B47"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Envisioning a World Lead by our Engineers, holding a Beacon of Hope and Confidence for Generations to come."
+                android:textColor="#FFFFFF"
+                android:textAlignment="center"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+        <!-- 🔵 MISSION BOX -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@drawable/vision_bg"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MISSION"
+                android:textColor="#0E2B47"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="To Produce Competent, Disciplined and Quality Engineers and Administrators Through Service par Excellence."
+                android:textColor="#FFFFFF"
+                android:textAlignment="center"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
+
+
