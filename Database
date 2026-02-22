@@ -1,0 +1,262 @@
+//Manifest
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.DB">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+
+// main
+
+package com.example.db;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.database.Cursor;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    EditText etName, etMark;
+    Button btnAdd, btnDisplay, btnDel;
+    TextView tvResult;
+    DBHelper db;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        etName = findViewById(R.id.etName);
+        etMark = findViewById(R.id.etMark);
+        btnAdd = findViewById(R.id.btnAdd);
+        btnDel = findViewById(R.id.btnDel);
+        btnDisplay = findViewById(R.id.btnDisplay);
+        tvResult = findViewById(R.id.tvResult);
+
+        db = new DBHelper(this);
+
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name = etName.getText().toString();
+                int mark = Integer.parseInt(etMark.getText().toString());
+
+                boolean inserted = db.insertStudent(name, mark);
+                if (inserted) {
+                    Toast.makeText(MainActivity.this, "Data Added", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        btnDel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String name = etName.getText().toString().trim();
+
+                if (name.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Enter Name", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                boolean deleted = db.deleteStudent(name);
+
+                if (deleted) {
+                    Toast.makeText(MainActivity.this, "Data Deleted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "No Record Found", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+        btnDisplay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Cursor cursor = db.getAllStudents();
+                StringBuilder sb = new StringBuilder();
+
+                while (cursor.moveToNext()) {
+                    sb.append("Name: ")
+                            .append(cursor.getString(1))
+                            .append("  Mark: ")
+                            .append(cursor.getInt(2))
+                            .append("\n");
+                }
+                tvResult.setText(sb.toString());
+            }
+        });
+    }
+}
+
+//dbhelper
+
+package com.example.db;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+public class DBHelper extends SQLiteOpenHelper {
+
+    public static final String DB_NAME = "student.db";
+    public static final String TABLE_NAME = "student";
+
+    public DBHelper(Context context) {
+        super(context, DB_NAME, null, 1);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + TABLE_NAME +
+                "(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, mark INTEGER)");
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        onCreate(db);
+    }
+
+    public boolean insertStudent(String name, int mark) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("name", name);
+        cv.put("mark", mark);
+
+        long result = db.insert(TABLE_NAME, null, cv);
+        return result != -1;
+    }
+
+    public boolean deleteStudent(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete("student", "name=?", new String[]{name});
+        return result > 0;
+    }
+
+
+    public Cursor getAllStudents() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+    }
+}
+
+
+
+
+//xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#E3F2FD"
+    android:padding="20dp">
+
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:src="@drawable/img"
+        android:contentDescription="Education Image"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Student Marks Entry"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#0D47A1"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"/>
+
+    <EditText
+        android:id="@+id/etName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Student Name"
+        android:textColorHint="@color/black"
+        android:textColor="@color/black"
+        android:backgroundTint="#1976D2"
+        android:layout_marginBottom="10dp"/>
+
+    <EditText
+        android:id="@+id/etMark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Mark"
+        android:textColorHint="@color/black"
+        android:textColor="@color/black"
+        android:inputType="number"
+        android:backgroundTint="#1976D2"
+        android:layout_marginBottom="20dp"/>
+
+    <Button
+        android:id="@+id/btnAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Student"
+        android:backgroundTint="#2E7D32"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="10dp"/>
+
+    <Button
+        android:id="@+id/btnDel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete Student"
+        android:backgroundTint="#ff0000"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="10dp"/>
+
+    <Button
+        android:id="@+id/btnDisplay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Display Students"
+        android:backgroundTint="#1565C0"
+        android:textColor="#FFFFFF"/>
+
+    <TextView
+        android:id="@+id/tvResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#d8f1ff"
+
+        android:paddingTop="15dp"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+</LinearLayout>
