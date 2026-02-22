@@ -1,0 +1,368 @@
+//Main
+
+package com.example.quiz;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class QuestionActivity extends AppCompatActivity {
+
+    TextView tvQuestion;
+    RadioGroup radioGroup;
+    Button btnNext;
+
+    String[] questions = {
+            "Question 1: What does CPU stand for?",
+            "Question 2: What language is used for Android app development?",
+            "Question 3: Which company developed the Java programming language?",
+            "Question 4: What does HTML stand for?",
+            "Question 5: Which one is a cloud computing service?"
+    };
+
+    String[][] options = {
+            {"Central Processing Unit", "Computer Personal Unit", "Central Program Unit", "Control Processing Unit"},
+            {"Python", "Java", "C++", "Swift"},
+            {"Microsoft", "Sun Microsystems", "Apple", "IBM"},
+            {"Hyper Text Markup Language", "High Text Machine Language", "Hyperlink Text Mark Language", "Home Tool Markup Language"},
+            {"Amazon Web Services", "Linux", "Ubuntu", "GitHub"}
+    };
+
+    int[] answers = {0, 1, 1, 0, 0};
+
+    int questionIndex, score;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_question);
+
+        Toast.makeText(this, "QuestionActivity started", Toast.LENGTH_SHORT).show();
+
+        tvQuestion = findViewById(R.id.tvQuestion);
+        radioGroup = findViewById(R.id.radioGroup);
+        btnNext = findViewById(R.id.btnNext);
+
+        questionIndex = getIntent().getIntExtra("questionIndex", 0);
+        score = getIntent().getIntExtra("score", 0);
+
+        loadQuestion();
+
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                if(selectedId == -1) {
+                    Toast.makeText(QuestionActivity.this, "Please select an answer", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                RadioButton selectedRadio = findViewById(selectedId);
+                int selectedIndex = radioGroup.indexOfChild(selectedRadio);
+
+                if(selectedIndex == answers[questionIndex]){
+                    score++;
+                }
+
+                questionIndex++;
+
+                if(questionIndex < questions.length){
+                    loadQuestion(); // update UI
+                    radioGroup.clearCheck();
+                } else {
+                    // Quiz finished
+                    Intent resultIntent = new Intent(QuestionActivity.this, ResultActivity.class);
+                    resultIntent.putExtra("score", score);
+                    startActivity(resultIntent);
+                    finish();
+                }
+            }
+        });
+    }
+
+    private void loadQuestion(){
+        tvQuestion.setText(questions[questionIndex]);
+        radioGroup.removeAllViews();
+        for(String option : options[questionIndex]){
+            RadioButton rb = new RadioButton(this);
+            rb.setText(option);
+            rb.setTextSize(18f);
+            radioGroup.addView(rb);
+        }
+    }
+}
+
+//res
+
+package com.example.quiz;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class ResultActivity extends AppCompatActivity {
+
+    TextView tvResult;
+    Button btnRestart;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_result);
+
+        tvResult = findViewById(R.id.tvResult);
+        btnRestart = findViewById(R.id.btnRestart);
+
+        int score = getIntent().getIntExtra("score", 0);
+        tvResult.setText("Your Score: " + score + "/5");
+
+        btnRestart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ResultActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish(); 
+            }
+        });
+    }
+}
+
+//ques
+
+package com.example.quiz;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class QuestionActivity extends AppCompatActivity {
+
+    TextView tvQuestion;
+    RadioGroup radioGroup;
+    Button btnNext;
+
+    String[] questions = {
+            "Question 1: What does CPU stand for?",
+            "Question 2: What language is used for Android app development?",
+            "Question 3: Which company developed the Java programming language?",
+            "Question 4: What does HTML stand for?",
+            "Question 5: Which one is a cloud computing service?"
+    };
+
+    String[][] options = {
+            {"Central Processing Unit", "Computer Personal Unit", "Central Program Unit", "Control Processing Unit"},
+            {"Python", "Java", "C++", "Swift"},
+            {"Microsoft", "Sun Microsystems", "Apple", "IBM"},
+            {"Hyper Text Markup Language", "High Text Machine Language", "Hyperlink Text Mark Language", "Home Tool Markup Language"},
+            {"Amazon Web Services", "Linux", "Ubuntu", "GitHub"}
+    };
+
+    int[] answers = {0, 1, 1, 0, 0};
+
+    int questionIndex, score;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_question);
+
+        Toast.makeText(this, "QuestionActivity started", Toast.LENGTH_SHORT).show();
+
+        tvQuestion = findViewById(R.id.tvQuestion);
+        radioGroup = findViewById(R.id.radioGroup);
+        btnNext = findViewById(R.id.btnNext);
+
+        questionIndex = getIntent().getIntExtra("questionIndex", 0);
+        score = getIntent().getIntExtra("score", 0);
+
+        loadQuestion();
+
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                if(selectedId == -1) {
+                    Toast.makeText(QuestionActivity.this, "Please select an answer", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                RadioButton selectedRadio = findViewById(selectedId);
+                int selectedIndex = radioGroup.indexOfChild(selectedRadio);
+
+                if(selectedIndex == answers[questionIndex]){
+                    score++;
+                }
+
+                questionIndex++;
+
+                if(questionIndex < questions.length){
+                    loadQuestion(); 
+                    radioGroup.clearCheck();
+                } else {
+                    // Quiz finished
+                    Intent resultIntent = new Intent(QuestionActivity.this, ResultActivity.class);
+                    resultIntent.putExtra("score", score);
+                    startActivity(resultIntent);
+                    finish();
+                }
+            }
+        });
+    }
+
+    private void loadQuestion(){
+        tvQuestion.setText(questions[questionIndex]);
+        radioGroup.removeAllViews();
+        for(String option : options[questionIndex]){
+            RadioButton rb = new RadioButton(this);
+            rb.setText(option);
+            rb.setTextSize(18f);
+            radioGroup.addView(rb);
+        }
+    }
+}
+
+
+//xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/img"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TAKE A QUIZ"
+        android:textAlignment="center"
+        android:textColor="#00FFFF"
+        android:textSize="80sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="48dp"
+        android:shadowColor="#FFFFFF"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="8"/>
+
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:text="START"
+        android:textColor="#00FFFF"
+        android:textSize="20sp"
+        android:background="@drawable/img_1"
+        android:elevation="8dp"/>
+
+
+</LinearLayout>
+
+
+//res_xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/img"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/tvResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your Score: 0/5"
+        android:textColor="#00FFFF"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="48dp"
+        android:shadowColor="#FFFFFF"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="8"/>
+
+    <Button
+        android:id="@+id/btnRestart"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:text="RESTART"
+        android:textColor="#00FFFF"
+        android:textSize="20sp"
+        android:background="@drawable/img_1"
+        android:elevation="8dp"/>
+</LinearLayout>
+
+
+//ques_xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/img"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="130dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tvQuestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Question"
+            android:textColor="#00FFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="132dp"
+            android:layout_marginBottom="32dp"
+            android:shadowColor="#FFFFFF"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="8"/>
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="32dp"/>
+
+        <Button
+            android:id="@+id/btnNext"
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:text="NEXT"
+            android:textColor="#00FFFF"
+            android:textSize="20sp"
+            android:background="@drawable/img_1"
+            android:elevation="8dp"/>
+    </LinearLayout>
+</ScrollView>
+
+
