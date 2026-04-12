@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/img"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="130dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tvQuestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Question"
+            android:textColor="#00FFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="132dp"
+            android:layout_marginBottom="32dp"
+            android:shadowColor="#FFFFFF"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="8"/>
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="32dp"/>
+
+        <Button
+            android:id="@+id/btnNext"
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:text="NEXT"
+            android:textColor="#00FFFF"
+            android:textSize="20sp"
+            android:background="@drawable/img_1"
+            android:elevation="8dp"/>
+    </LinearLayout>
+</ScrollView>
