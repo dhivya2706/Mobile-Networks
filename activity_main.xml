@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="#E0F7FA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- App Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="City Hospital Feedback"
+            android:textSize="28sp"
+            android:textColor="#00796B"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Name -->
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Your Name"
+            android:textColor="@color/black"
+            android:inputType="textPersonName"
+            android:layout_marginBottom="16dp"
+            android:padding="14dp"
+            android:background="@drawable/edit_text_bg"/>
+
+        <!-- Email -->
+        <EditText
+            android:textColor="@color/black"
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Your Email"
+            android:inputType="textEmailAddress"
+            android:layout_marginBottom="16dp"
+            android:padding="14dp"
+            android:background="@drawable/edit_text_bg"/>
+
+        <!-- Service Rating -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Service Rating"
+            android:textSize="18sp"
+            android:textColor="#004D40"
+            android:layout_marginBottom="8dp"/>
+
+        <RatingBar
+            android:id="@+id/ratingService"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Cleanliness Rating -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cleanliness Rating"
+            android:textSize="18sp"
+            android:textColor="#004D40"
+            android:layout_marginBottom="8dp"/>
+
+        <RatingBar
+            android:id="@+id/ratingCleanliness"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Feedback -->
+        <EditText
+            android:id="@+id/etFeedback"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:hint="Your Feedback"
+            android:inputType="textMultiLine"
+            android:textColor="@color/black"
+            android:gravity="top"
+            android:padding="14dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/edit_text_bg"/>
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:text="Submit"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:background="@drawable/button_bg"/>
+    </LinearLayout>
+</ScrollView>
